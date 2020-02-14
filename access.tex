@@ -1,0 +1,650 @@
+\documentclass[two column]{ieeeaccess}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{threeparttable}
+\usepackage[utf8]{inputenc}
+\usepackage{float}
+\usepackage{cite}
+\usepackage{amsmath}
+\usepackage{bbding}
+\usepackage{pifont}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage[bb=boondox]{mathalfa}
+\usepackage[pdftex]{graphicx}
+\newcommand{\xmark}{\text{\ding{55}}}
+
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+%\history{Received December 5, 2017, accepted February 1, 2018, date of publication February 12, 2018, date of current version April 4, 2018.}
+%\doi{10.1109/ACCESS.2018.2804379}
+
+\title{Live Image Processing to Identify Objects: A Systematic Review}
+\author{\uppercase{M. Firoz Ahmed}, \uppercase{Md. Mushtaq Shahriyar Rafee}, \uppercase{M. Abdullah Al Mumin}}
+
+\address{Department of Computer Science & Engineering, Shahjalal University of Science and Technology, Sylhet}
+
+%\tfootnote{}
+
+%\markboth
+%{Author \headeretal: Preparation of Papers for IEEE TRANSACTIONS and JOURNALS}
+%{Author \headeretal: Preparation of Papers for IEEE TRANSACTIONS and JOURNALS}
+
+%\corresp{Corresponding author: Liangzhi Tang (tlzjay@163.com)}
+
+\begin{abstract}
+Object detection has a close relationship with video analysis and image understanding. It has attracted much research attention in recent years. The performance of traditional object detection methods can easily be stagnated by constructing complex ensembles that combine multiple low-level image features with high-level context from object detectors and scene classifiers. Image segmentation is one of the most important tasks in image processing which is used to partition an image into several disjoint subsets such that each subset corresponds to a meaningful part of the image. With the rapid development in deep learning and growing research on image segmentation, more powerful tools and many segmentation methods have been developed and interpreted differently towards content analysis and image understanding for different applications, which are able to learn semantic, high-level, deeper features. These models behave differently in network architecture, training strategy, and optimization function. In this paper, we provide a systematic review of different object detection frameworks. Experimental analyses are provided to compare various methods and draw some meaningful conclusions. Finally, several promising directions and tasks are provided to serve as guidelines for future work in object detection.
+\end{abstract}
+
+\begin{keywords}
+Object detection, Image processing, Object Localization/Classification, Image Segmentation, Real-time Object detection/Image Processing, Deep learning, Neural network.
+\end{keywords}
+
+\titlepgskip=-15pt
+
+\maketitle
+
+\section{Introduction}
+Digital image processing (DIP) plays a vital role in many applications to retrieve required information from the given image in a way that it has not affect the other features of the image. Images are the important medium of conveying information and by understanding images the retrieved information can be used for many tasks. A digital image is composed by finite number of elements or pixels and the acquisition of images is called as imaging. DIP is a multidisciplinary operation and it has different kinds of process such as image representation, segmentation, compression and transformation \cite{0}. 
+
+To gain a complete image understanding, we should not only concentrate on classifying different images but also try to precisely estimate the concepts and locations of objects contained in each image. This task is referred as object detection \cite{1}, which usually consists of different sub tasks such as face detection \cite{2}, pedestrian detection \cite{3}, and skeleton detection \cite{4}. As one of the fundamental computer vision problems, object detection is able to provide valuable information for semantic understanding of images and videos and is related to many applications, including image classification \cite{5,6}, human behavior analysis \cite{7} and many more. Meanwhile, inheriting from neural networks and related learning systems, the progress in these fields will develop neural network algorithms and will also have great impacts on object detection techniques that can be considered as learning systems \cite{11,12,13,14}. 
+
+Image segmentation is used to partition an image into several disjoint subsets such that each subset corresponds to a meaningful part of the image \cite{8}. Image segmentation is defined as a process of partitioning an image into homogenous groups such that each region is homogenous but the union of no two adjacent regions is homogenous \cite{9}. Image segmentation is an essential component of image analysis which is used to extract information from a certain image in a clear and meaningful way to meet the demands of application. Image segmentation has been used for object recognition, boundary estimation within motion or stereo systems, image compression, image editing and image database look-up. Image segmentation has been varying different interpretation for different kinds of application towards content analysis and image understanding \cite{10}.
+
+Due to large variations in viewpoints, poses, occlusions, and lighting conditions, it is difficult to perfectly accomplish object detection with an additional object localization task. A single segmentation method cannot be well applicable for different types of images. Thus the development of an effective image segmentation technique for partitioning all categorizes images is a challenging issue in image processing.
+
+\Figure[h](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{domain.PNG} {Application domains of object detection. \label{fig1}}
+
+In this paper, a systematic review is provided to summarize representative models and their different characteristics in several application domains. They are depicted in Fig. 1.  The dotted lines indicate that the corresponding domains are associated with each other under certain conditions. 
+
+The rest of this paper is organized as follows. In Section II, a brief introduction on the background of object detection architectures and image segmentation is provided. In Section III, several research questions are asked, different search strategy, search terms, paper screening and data extraction are provided. In Section IV, the answer of the research question's and a brief discussion on different methods of object detection are presented. At last, some concluding remarks are presented in Section V.
+
+\section{Background}
+
+The problem definition of object detection is to determine where objects are located in a given image (object localization) and which category each object belongs to (object classification). Therefore, the pipeline of traditional object detection models can be mainly divided into three stages: informative region selection, feature extraction, and classification \cite{30}.
+
+\subsection{Informative Region Selection}
+
+As different objects may appear in any positions of the image and have different aspect ratios or sizes, it is a natural choice to scan the whole image with a multiscale sliding window. Although this exhaustive strategy can find out all possible positions of the objects, its shortcomings are also obvious. Due to a large number of candidate windows, it is computationally expensive and produces too many redundant windows. However, if only a fixed number of sliding window templates is applied, unsatisfactory regions may be produced.
+
+\subsection{Feature Extraction}
+
+To recognize different objects, we need to extract visual features that can provide a semantic and robust representation. Scale-invariant feature transform \cite{19}, histograms of oriented gradients (HOG) \cite{20}, and Haar-like \cite{21} features are the representative ones. This is due to the fact that these features can produce representations associated with complex cells in human brain \cite{19}. However, due to the diversity of appearances, illumination conditions, and backgrounds, it is difficult to manually design a robust feature descriptor to perfectly describe all kinds of objects.
+
+\subsection{Classification}
+
+Besides, a classifier is needed to distinguish a target object from all the other categories and to make the representations more hierarchical, semantic, and informative for visual recognition. Usually, the supported vector machine (SVM) \cite{22}, AdaBoost \cite{23}, and deformable part-based model (DPM) \cite{24} are good choices. Among these classifiers, the DPM is a flexible model by combining object parts with deformation cost to handle severe deformations. In DPM, with the aid of a graphical model, carefully designed low-level features and kinematically inspired part decompositions are combined.
+
+\subsection{Generic Object Detection}
+
+\Figure[ht](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{generic.PNG} {\textbf{Two types of frameworks: region proposal based and regression/classification based. SPP: spatial pyramid pooling \cite{64}, FRCN: faster R-CNN \cite{16}, RPN: region proposal network \cite{17}, FCN: fully convolutional network \cite{65}, BN: batch normalization \cite{43}, and Deconv layers: deconvolution layers \cite{54}}\label{fig2}}
+
+
+Generic object detection aims at locating and classifying existing objects in any one image and labeling them with rectangular BBs to show the confidences of existence. The frameworks of generic object detection methods can mainly be categorized into two types (see Fig. 2). One follows the traditional object detection pipeline, generating region proposals at first and then classifying each proposal into different object categories. The other regards object detection as a regression or classification problem, adopting a unified framework to achieve final results (categories and locations) directly. The region proposal-based methods mainly include R-CNN \cite{15}, spatial pyramid pooling (SPP)-net \cite{64}, Fast R-CNN \cite{16}, Faster R-CNN \cite{17}, region-based fully convolutional network (R-FCN) \cite{65}, feature pyramid networks (FPN) \cite{66}, and Mask R-CNN \cite{67}, some of which are correlated with each other (e.g., SPP-net modifies R-CNN with an SPP layer). The regression/classification-based methods mainly include MultiBox \cite{68}, AttentionNet \cite{69}, G-CNN \cite{70}, YOLO \cite{18}, Single Shot MultiBox Detector (SSD) \cite{71}, YOLOv2 \cite{72}, deconvolutional single shot detector (DSSD) \cite{73}, and deeply supervised object detectors (DSOD) \cite{74}. The correlations between these two pipelines are bridged by the anchors introduced in Faster R-CNN. Details of these methods are as follows.
+
+
+\subsubsection{Region Proposal-Based Framework}
+
+The region proposal-based framework, a two-step process, matches the attentional mechanism of the human brain to some extent, which gives a coarse scan of the whole scenario first and then focuses on regions of interest (RoIs). Among the prerelated works \cite{44}, \cite{75,76}, the most representative one is Overfeat \cite{44}. This model inserts CNN into the sliding window method, which predicts BBs directly from locations of the topmost feature map after obtaining the confidences of underlying object categories.
+
+\Figure[ht](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{R-CNN.PNG} {\textbf{Flowchart of R-CNN \cite{15}, which consists of three stages: 1) extracts BU region proposals, 2) computes features for each proposal using a CNN, and then 3) classifies each region with class-specific linear SVMs.}\label{fig3}}
+
+\begin{itemize}
+    \item[a)]\textit{R-CNN: }It is of significance to improve the quality of candidate BBs and to take a deep architecture to extract high-level features. To solve these problems, R-CNN was proposed by Girshick et al. \cite{15} and obtained a mean average precision (mAP) of 53.3\% with more than 30\% improvement over the previous best result (DPM histograms of sparse codes \cite{77}) on PASCAL VOC 2012. Fig. 3 shows the flowchart of R-CNN, which can be divided into three stages. \\
+
+     
+    \item[b)]\textit{SPP-Net: }
+    FC layers must take a fixed-size input. That is why R-CNN chooses to warp or crop each region proposal into the same size. However, the object may exist partly in the cropped region and unwanted geometric distortion may be produced due to the warping operation. These content losses or distortions will reduce recognition accuracy, especially when the scales of objects vary. 
+    
+    To solve this problem, He et al. \cite{64} took the theory of spatial pyramid matching (SPM) \cite{89,90} into consideration and proposed a novel CNN architecture named SPP-net. SPM takes several finer to coarser scales to partition the image into a number of divisions and aggregates quantized local features into mid-level representations. 
+    
+    \Figure[ht](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{SPP.PNG} {\textbf{Architecture of SPP-net for object detection \cite{64}.}\label{fig4}}
+    
+    The architecture of SPP-net for object detection can be found in Fig. 4. Different from R-CNN, SPP-net reuses feature maps of the fifth conv layer (conv5) to project region proposals of arbitrary sizes to fixed-length feature vectors. The feasibility of the reusability of these feature maps is due to the fact that the feature maps not only involve the strength of local responses but also have relationships with their spatial positions \cite{64}. The layer after the final conv layer is referred to as the SPP layer. If the number of feature maps in conv5 is 256, taking a three-level pyramid, the final feature vector for each region proposal obtained after the SPP layer has a dimension of $256 \times (1^2 + 2^2 + 4^2) = 5376$. 
+    
+    SPP-net not only gains better results with a correct estimation of different region proposals in their corresponding scales but also improves detection efficiency in the testing period with the sharing of computation cost before SPP layer among different proposals.\\
+    
+    
+    \item[c)]\textit{Fast R-CNN: } Although SPP-net has achieved impressive improvements in both accuracy and efficiency over R-CNN, it still has some notable drawbacks. SPP-net takes almost the same multistage pipeline as R-CNN, including feature extraction, network fine-tuning, SVM training, and bounding-box regressor fitting. Therefore, an additional expense on storage space is still required. In addition, the conv layers preceding the SPP layer cannot be updated with the fine-tuning algorithm introduced in \cite{64}. As a result, an accuracy drop of very deep networks is unsurprising. To this end, Girshick \cite{16} introduced a multitask loss on classification and bounding box regression and proposed a novel CNN architecture named Fast R-CNN.
+    
+    \Figure[ht](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{Fast_R_CNN.PNG} {\textbf{Architecture of Fast R-CNN \cite{16}.}\label{fig5}}
+    
+    The architecture of Fast R-CNN is exhibited in Fig. 5. Similar to SPP-net, the whole image is processed with conv layers to produce feature maps. Then, a fixed-length feature vector is extracted from each region proposal with an RoI pooling layer. The RoI pooling layer is a special case of the SPP layer, which has only one pyramid level. Each feature vector is then fed into a sequence of FC layers before finally branching into two sibling output layers. One output layer is responsible for producing softmax probabilities for all $C + 1$ categories ($C$ object classes plus one “background” class) and the other output layer encodes refined bounding-box positions with four real-valued numbers. All parameters in these procedures (except the generation of region proposals) are optimized via a multitask loss in an end-to-end way.\\
+    
+    The multitasks loss L is defined in the following to jointly train classification and bounding-box regression:
+    
+    \begin{equation}
+    \label{eqn1}
+    L(p,u,t^u,v) = L_{cls}(p,u) + \lambda[u \geq 1]L_{loc}(t^u,v)
+    \end{equation}
+%
+    where \(L_{cls}(p, u)= -log p_u\) calculates the log loss for ground truth class u, and $p_u$ is driven from the discrete probability distribution \(p = (p_0,. . ., p_C)\) over the C+1 outputs from the last FC layer. \(L_{loc}(t^u, v)\) is defined over the predicted offsets \(t^u = (t^u_x , t^u_y , t^u_w, t^u_h)\) and ground-truth bounding-box  regression targets \(v = (v_x, v_y, v_w, v_h)\), where x,y,w, and h denote the two coordinates of the box center, width, and height, respectively. Each $t^u$ adopts the parameter settings in \cite{15} to specify an object proposal with a log-space height/width shift and scale-invariant translation. The Iverson bracket indicator function $[u \geq 1]$ is employed to omit all background RoIs. To provide more robustness against outliers and eliminate the sensitivity in exploding gradients, a smooth $L_1$ loss is adopted to fit bounding-box regressors as follows:
+    
+    \begin{equation}
+    \label{eqn2}
+    L_{loc}(t^u,v) = \sum_{i\in x,y,w,h} smooth_{L_1}(t^u_i - v_i)
+    \end{equation}
+    where
+    \begin{equation}
+    \label{eqn3}
+    smooth_{L_1}(x) = 
+        \begin{cases}
+          $$ 0.5x^2 $$ & \text{if } $$ |x| < 1 $$\\
+          $$ |x| - 0.5 $$ & \text{otherwise.}
+        \end{cases} 
+    \end{equation}
+    
+    \item[d)]\textit{Faster R-CNN: }Despite the attempt to generate candidate boxes with biased sampling \cite{88}, state-of-the-art object detection networks mainly rely on additional methods, such as selective search and Edgebox, to generate a candidate pool of isolated region proposals. Region proposal computation is also a bottleneck in improving efficiency. To solve this problem, Ren $et al$. \cite{17}, \cite{92} introduced an additional region proposal network (RPN), which acts in a nearly cost-free way by sharing full-image conv features with detection network. 
+    
+    RPN is achieved with an FCN, which has the ability to predict object bounds and scores at each position simultaneously. Similar to \cite{78}, RPN takes an image of arbitrary size to generate a set of rectangular object proposals. RPN operates on a specific conv layer with the preceding layers shared with the object detection network. 
+    
+    \Figure[ht](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{RPN.PNG} {\textbf{RPN in Faster R-CNN \cite{17}. K predefined anchor boxes are convoluted with each sliding window to produce fixed-length vectors which are taken by cls and reg layer to obtain corresponding outputs.}\label{fig6}}
+    
+    The architecture of RPN is shown in Fig. 6. The network slides over the conv feature map and fully connects to an $n \times n$ spatial window. A low-dimensional vector (512-dimensional for VGG16) is obtained in each sliding window and fed into two sibling FC layers, namely, box-classification layer (cls) and box-regression layer (reg). This architecture is implemented with an $n \times n$ conv layer followed by two sibling $1 \times 1$ conv layers. To increase nonlinearity, ReLU is applied to the output of the n × n conv layer. \\
+    
+    \item[e)]\textit{R-FCN: } Divided by the RoI pooling layer, a prevalent family \cite{16,17} of deep networks for object detection is composed of two subnetworks: a shared fully convolutional subnetwork (independent of RoIs) and an unshared RoI-wise subnetwork. This decomposition originates from pioneering classification architectures (e.g., AlexNet \cite{6} and VGG16 \cite{46}) which consist of a convolutional subnetwork and several FC layers separated by a specific spatial pooling layer. 
+    
+    Recent state-of-the-art image classification networks, such as ResNets \cite{47} and GoogLeNets \cite{45}, \cite{93}, are fully convolutional. To adapt to these architectures, it is natural to construct a fully convolutional object detection network without RoI-wise subnetwork. However, it turns out to be inferior with such a naive solution \cite{47}. This inconsistency is due to the dilemma of respecting translation variance in object detection compared with increasing translation invariance in image classification. In other words, shifting an object inside an image should be indiscriminative in image classification while any translation of an object in a bounding box may be meaningful in object detection. A manual insertion of the RoI pooling layer into convolutions can break down translation invariance at the expense of additional unshared region-wise layers. 
+    
+    Different from Faster R-CNN, for each category, the last conv layer of R-FCN produces a total of $k^2$ position-sensitive score maps with a fixed grid of $k \times k$ first and a positionsensitive RoI pooling layer is then appended to aggregate the responses from these score maps. Finally, in each RoI, $k^2$ position-sensitive scores are averaged to produce a $C + 1$-d vector and softmax responses across categories are computed. Another $4k^2-d$ conv layer is appended to obtain class-agnostic BBs. 
+    
+    With R-FCN, more powerful classification networks can be adopted to accomplish object detection in a fully convolutional architecture by sharing nearly all the layers, and the state-of-the-art results are obtained on both PASCAL VOC and Microsoft COCO \cite{94} data sets at a test speed of 170 ms per image. \\
+    
+    \item[f)]\textit{FPN: } Feature pyramids built upon image pyramids (featurized image pyramids) have been widely applied in many object detection systems to improve scale invariance \cite{24}, \cite{64} [Fig. 7(a)]. However, training time and memory consumption increase rapidly. To this end, some techniques take only a single input scale to represent high-level semantics and increase the robustness to scale changes [Fig. 7(b)], and image pyramids are built at test time which results in an inconsistency between train/test-time inferences \cite{16,17}. The in-network feature hierarchy in a deep ConvNet produces feature maps of different spatial resolutions while introduces large semantic gaps caused by different depths [Fig. 7(c)]. To avoid using low-level features, pioneer works \cite{71}, \cite{95} usually build the pyramid starting from middle layers or just sum transformed feature responses, missing the higher resolution maps of the feature hierarchy. 
+    
+    \Figure[ht](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{FPN.PNG} {\textbf{ Main concern of FPN \cite{66}. (a) It is slow to use an image pyramid to build a feature pyramid. (b) Only single-scale features are adopted for faster detection. (c) Alternative to the featurized image pyramid is to reuse the pyramidal feature hierarchy computed by a ConvNet. (d) FPN integrates both (b) and (c). Blue outlines indicate feature maps and thicker outlines denote semantically stronger features.}\label{fig7}}
+    
+    Different from these approaches, FPN \cite{66} holds an architecture with a BU pathway, a top-down (TD) pathway and several lateral connections to combine low-resolution and semantically strong features with high-resolution and semantically weak features [Fig. 7(d)]. The BU pathway, which is the basic forward backbone ConvNet, produces a feature hierarchy by downsampling the corresponding feature maps with a stride of 2. The layers owning the same size of output maps are grouped into the same network stage and the output of the last layer of each stage is chosen as the reference set of feature maps to build the following TD pathway. 
+    
+    To build the TD pathway, feature maps from higher network stages are upsampled at first and then enhanced with those of the same spatial size from the BU pathway via lateral connections. A $1 \times 1$ conv layer is appended to the upsampled map to reduce channel dimensions and the mergence is achieved by elementwise addition. Finally, a $3 \times 3$ convolution is also appended to each merged map to reduce the aliasing effect of upsampling and the final feature map is generated. This process is iterated until the finest resolution map is generated. 
+    
+    As feature pyramid can extract rich semantics from all levels and be trained end to end with all scales, the state-of-theart representation can be obtained without sacrificing speed and memory. Meanwhile, FPN is independent of the backbone CNN architectures and can be applied to different stages of object detection (e.g., region proposal generation) and to many other computer vision tasks (e.g., instance segmentation). \\
+    
+    
+    \item[g)]\textit{Mask R-CNN: } Instance segmentation \cite{96} is a challenging task which requires detecting all objects in an image and segmenting each instance (semantic segmentation \cite{97}). These two tasks are usually regarded as two independent processes. The multitask scheme will create spurious edge and exhibit systematic errors on overlapping instances \cite{98}. To solve this problem, parallel to the existing branches in Faster R-CNN for classification and bounding box regression, the Mask RCNN \cite{67} adds a branch to predict segmentation masks in a pixel-to-pixel manner (Fig. 8). 
+    
+      \Figure[ht](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{Mask_R_CNN.PNG} {\textbf{Mask R-CNN framework for instance segmentation \cite{67}.}\label{fig8}}
+      
+    Different from the other two branches that are inevitably collapsed into short output vectors by FC layers, the segmentation mask branch encodes an $m \times m$ mask to maintain the explicit object spatial layout. This kind of fully convolutional
+    representation requires fewer parameters but is more accurate than that in \cite{}. Formally, besides the two losses in (1) for classification and bounding box regression, an additional loss for segmentation mask branch is defined to reach a multitask loss. This loss is only associated with ground-truth class and relies on the classification branch to predict the category. 
+    
+    Because RoI pooling, the core operation in Faster R-CNN, performs a coarse spatial quantization for feature extraction, misalignment is introduced between the RoI and the features. It affects classification little because of its robustness to small translations. However, it has a large negative effect on pixelto-pixel mask prediction. To solve this problem, Mask R-CNN adopts a simple and quantization-free layer, namely, RoIAlign, to preserve the explicit per-pixel spatial correspondence faithfully. RoIAlign is achieved by replacing the harsh quantization of RoI pooling with bilinear interpolation \cite{99}, computing the exact values of the input features at four regularly sampled locations in each RoI bin. In spite of its simplicity, this seemingly minor change improves mask accuracy greatly, especially under strict localization metrics. 
+    
+    Given the Faster R-CNN framework, the mask branch only adds a small computational burden and its cooperation with other tasks provides complementary information for object detection. As a result, Mask R-CNN is simple to implement with promising instance segmentation and object detection results. In a word, Mask R-CNN is a flexible and efficient framework for instance-level recognition, which can be easily generalized to other tasks with minimal modification. \\
+    
+    \item[h)]\textit{Multitask Learning, Multiscale Representation, and Contextual Modeling: } Multiscale Representation, and Contextual Modeling: Although the Faster R-CNN gets promising esults with several hundred proposals, it still struggles in mall-size object detection and localization, mainly due to the coarseness of its feature maps and limited information provided in particular candidate boxes. The phenomenon is more obvious on the Microsoft COCO data set which consists of objects at a broad range of scales, less prototypical images, and requires more precise localization. To tackle these problems, it is of necessity to accomplish object detection with multitask learning \cite{100}, multiscale representation \cite{95}, and context modeling \cite{101} to combine complementary information from multiple sources. \\
+    
+    \item[i)]\textit{Thinking in Deep Learning-Based Object Detection: } Apart from the above-mentioned approaches, there are still many important factors for continued progress. 
+    
+    There is a large imbalance between the number of annotated objects and background examples. To address this problem, Shrivastava $et al$. \cite{113} proposed an effective online mining algorithm (OHEM) for automatic selection of the hard examples, which leads to a more effective and efficient training. 
+    
+    Instead of concentrating on feature extraction, Ren $et al$. \cite{114} made a detailed analysis on object classifiers and found that it is of particular importance for object detection to construct a deep and convolutional per-region classifier carefully, especially for ResNets \cite{47} and GoogLeNets \cite{45}.
+    
+\end{itemize}
+
+\subsubsection{Regression/Classification-Based Framework}
+
+\begin{itemize}
+    \item[a)]\textit{Pioneer Works: } Previous to YOLO and SSD, many researchers have already tried to model object detection as a regression or classification task.
+    
+    Szegedy $et al$. \cite{118} formulated the object detection task as a DNN-based regression, generating a binary mask for the test image and extracting detections with a simple bounding box inference. However, the model has difficulty in handling overlapping objects, and BBs generated by direct upsampling is far from perfect.
+    
+    Pinheiro $et al$. \cite{119} proposed a CNN model with two branches: one generates class agnostic segmentation masks and the other predicts the likelihood of a given patch centered on an object. Inference is efficient since class scores and segmentation can be obtained in a single model with most of the CNN operations shared.\\
+    
+    \item[b)]\textit{YOLO: } Redmon $et al$. \cite{18} proposed a novel framework called YOLO, which makes the use of the whole topmost feature map to predict both confidences for multiple categories and BBs. The basic idea of YOLO is exhibited in Fig. 9. YOLO divides the input image into an $S \times S$ grid and each grid cell is responsible for predicting the object centered in that grid cell. Each grid cell predicts $B$ BBs and their corresponding confidence scores. Formally, confidence scores are defined as $Pr(Object) * IOU_{truth}^{pred}$ , which indicates how likely there exist objects $(Pr(Object) >= 0)$ and shows confidences of its prediction $(IOU_{truth}^{pred})$. At the same time, regardless of the number of boxes, $C$ conditional class probabilities $(Pr(Class_i|Object))$ should also be predicted in each grid cell. It should be noticed that only the contribution from the grid cell containing an object is calculated.
+    
+    \Figure[ht](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{YOLO.PNG} {\textbf{Main idea of YOLO \cite{18}.}\label{fig9}}
+    
+    At test time, class-specific confidence scores for each box are achieved by multiplying the individual box confidence predictions with the conditional class probabilities as follows:
+    \begin{equation}
+    \begin{aligned}
+        Pr(Object) * & IOU_{truth}^{pred} * Pr(Class_i|Object) \\
+        & = Pr(Class_i) * IOU_{truth}^{pred}
+    \end{aligned}
+    \end{equation} \\
+    
+    where the existing probability of class-specific objects in the box and the fitness between the predicted box and the object are both taken into consideration.
+    
+    During training, the following loss function is optimized:
+    \begin{equation}
+    \begin{split}
+    & \lambda_{coord} \sum_{i=0}^{S^2} \sum_{j=0}^{B} 
+    \mathbb{1}^{obj}_{ij} [(x_i - \hat{x_i})^2 + (y_i - \hat{y_i})^2]  + \\
+    & \lambda_{coord} \sum_{i=0}^{S^2} \sum_{j=0}^{B} 
+    \mathbb{1}^{obj}_{ij} \Bigg[ \Bigg( \sqrt{w_i} - \sqrt{\hat{w_i}})^2 +
+    (\sqrt{h_i} - \sqrt{\hat{h_i}} \Bigg)^2 \Bigg] \\
+    & + \sum_{i=0}^{S^2} \sum_{j=0}^{B} \mathbb{1}^{obj}_{ij} (C_i - 
+    \hat{C_i})^2 \\
+    & + \lambda_{noobj} \sum_{i=0}^{S^2} \sum_{j=0}^{B} 
+    \mathbb{1}^{noobj}_{ij} (C_i - \hat{C_i})^2 \\
+    & + \sum_{i=0}^{S^2} \mathbb{1}^{obj}_{i} \sum_{c \in classes}
+    (p_i(c) - \hat{p_i}(c))^2
+    \end{split}
+    \label{eqn6}
+    \end{equation}
+    
+    In a certain cell $i , (x_i , y_i )$ denote the center of the box relative to the bounds of the grid cell, $(w_i , h_i )$ are the normalized width and height relative to the image size, $C_i $represents the confidence scores, $1^obj_i $indicates the existence of objects, and $1^obj_{ij}$ denotes that the prediction is conducted by the j th bounding box predictor. Note that only when an object is present in that grid cell, the loss function penalizes classification errors. Similarly, when the predictor is “responsible” for the ground truth box (i.e., the highest IoU of any predictor in that grid cell is achieved), bounding box coordinate errors are penalized.
+    
+    \item[c)]\textit{SSD: } YOLO has a difficulty in dealing with small objects in groups, which is caused by strong spatial constraints imposed on bounding box predictions \cite{18}. Meanwhile, YOLO struggles to generalize to objects in new/unusual aspect ratios/configurations and produces relatively coarse features due to multiple downsampling operations. 
+    
+    Aiming at these problems, Liu $et al$. \cite{71} proposed an SSD, which was inspired by the anchors adopted in MultiBox \cite{68}, RPN \cite{17}, and multiscale representation \cite{95}. Given a specific feature map, instead of fixed grids adopted in YOLO, the SSD takes the advantage of a set of default anchor boxes with different aspect ratios and scales to discretize the output space of BBs. To handle objects with various sizes, the network fuses predictions from multiple feature maps with different resolutions. \\
+    
+    Integrating with hard negative mining, data augmentation, and a larger number of carefully chosen default anchors, SSD significantly outperforms the Faster R-CNN in terms of accuracy on PASCAL VOC and COCO while being three times faster. The SSD300 (input image size is $300 \times 300$) runs at 59 fps, which is more accurate and efficient than YOLO. However, SSD is not skilled at dealing with small objects, which can be relieved by adopting better feature extractor backbone (e.g., ResNet101), adding deconvolution layers with skip connections to introduce additional large-scale context, and designing better network structure (e.g., stem block and dense block).
+    
+\end{itemize}
+
+
+ Image Segmentation is the process of partitioning a digital image into multiple regions or sets of pixels \cite{25}. The images are segmented on the basis of set of pixels in a region that are similar on the basis of the homogeneity criteria such as color, intensity or texture, which helps to locate and identify objects or boundaries in an image. All of the pixels in a region are similar with respect to the characteristic property such as color, intensity, or texture and adjacent regions are significantly different with respect to the same characteristics. Image segmentation is a branch of image analysis and the main idea is to distinguish different objects in the image content. The image is divided into two parts namely: background and foreground. The foreground is defined as the interesting objects and the background as the rest \cite{26}. Image segmentation process is distinguishing and separating the two from one another.
+
+ The goal of segmentation is to simplify and/or change the representation of an image into more meaningful and easier to analysis. Image segmentation is typically used to locate objects and boundaries such as points, lines, edges and regions in images \cite{27}. The result of image segmentation is a set of regions that collectively cover the entire image, or a set of contours extracted from the image.
+
+ Image segmentation is a multiple objective problem and it involves several processes such as pattern representation, feature selection, feature extraction and pattern proximity. Consideration of all these objectives is a difficult problem and thus an appropriate optimization approach is required for segmentation process. The various steps that are performed during image segmentation process as shown in Figure  are described as the following \cite{28}:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.5in]{segmentation.PNG}
+    \caption{Image Segmentation Process.}
+    \label{fig10}
+\end{figure}
+ 
+\begin{itemize}
+
+    \item Image Acquisition: In this step the given input image is read by the various devices such as sensors, tomography devices and cameras.
+    
+    \item Pre-Processing: The pre-processing step is used to determine the area of focus in the image. This process is used to enhance the contrast of the image, removal of noise, correct defects illumination and separate the objects of interest in the image. 
+    
+    \item Image Segmentation:: In this step the focused area of input image is segmented into its constituent parts or objects as sub-regions based on the suitable segmentation techniques.
+    
+    \item Post Processing:  This step process the boundary of the object from the background for producing better segmented image.
+    
+    \item Feature Extraction: This step is used to extract the unique features of image such as intensity, shape and colour information. This process helps to reduce the complexity of classification problems.
+    
+    \item Classification: This step classifies the segmented image based on the extracted feature.
+    
+\end{itemize}
+
+\section{Research}
+
+\subsection{Research Questions}
+This SLR aims to summarize and clarify the empirical evidence on OD methods. Towards this aim, six research questions (RQs) were raised as follows:
+\begin{itemize}
+
+    \item[a)]RQ1: What are the approaches of the methods that is used to identify objects in an image?\\
+    RQ1 aims at identifying the methods that have been used to identify objects. Practitioners can take the methods as candidate solutions in their practice.
+    
+    \item[b)]RQ2: Are there any methods that distinctly outperform other methods? \\
+    RQ2 aims at identifying the methods with excellent performance. 
+    
+    \item[c)]RQ3: How are these methods efficient than other methods? \\
+    To determine which methods outperform other methods, the comparisons between different methods can be synthesized. RQ3 aims at that.
+    
+    \item[d)]RQ4: Which datasets are chosen to evaluate and compare different OD methods and systems? \\
+    RQ4 aims at identifying the datasets that is used to evaluate different methods and compare the performance.
+    
+    \item[e)]RQ5: How much time do these methods require to complete their respective object detection?\\
+    RQ5 aims at determining the taken time to detect the objects for each methods to compare them.
+    
+    \item[f)]RQ6: What are the trends in research to detect objects from the year 2010 to 2019?\\
+    RQ6 aims at discovering the latest research techniques.
+    
+\end{itemize}
+
+    \begin{table*}[h]
+\begin{center}
+\caption{\textbf{Number of papers retrieved in each Digital Library after search strings execution.}}
+\begin{tabular}{c|c|c|c|c|c|c}
+\hline
+        Sl no. &  Term Search & ACM & IEEE & Springer & Elsevier & Total     \\ 
+\hline
+        01 & Object detection & 14 & 27 & 6 & 3 & 40 \\
+        02 & Image processing & 12 & 25 & 8 & 2 & 47 \\
+        03 & Live image processing & 13 & 23 & 4 & 1 & 41 \\
+        04 & Object localization & 4 & 7 & 1 & 1 & 13 \\
+        05 & Object classification & 6 & 7 & 2 & 0 & 15 \\
+        06 & Image segmentation & 11 & 16 & 4 & 2 & 35 \\
+        07 & Real-time object detection & 3 & 6 & 2 & 0 & 11 \\
+        08 & Real-time image processing & 2 & 4 & 1 & 0 & 7 \\
+        09 & Real-time image analysis & 3 & 8 & 2 & 0 & 13 \\
+        10 & Moving object detection & 3 & 5 & 1 & 1 & 10 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{table*}[h!]
+\begin{center}
+\caption{\textbf{Inclusion and Exclusion Criteria defined for screening.}}
+\begin{tabular}{l|l}
+\hline
+        Inclusion criteria                                      &   Exclusion criteria     \\ 
+\hline
+        Using techniques to identify and locate moving objects. &   Papers for salient object detection methods.  \\
+
+        Using methods for image segmentation.                   &   Papers for face or finger-print recognition methods.\\
+
+        Comparative study that compares different methods.      &   Papers for hand gesture recognition methods.\\
+        
+        Review papers will be included.                         &   Papers for blind image quality indices methods.\\
+        
+        \makecell{For study that has both conference version and journal version,\\ both will be included.}                                                              & For duplicate publications of the same study.\\
+        
+        Papers published until November 1st 2019.               & \\
+\hline
+\end{tabular}
+\end{center}
+\end{table*}
+
+\subsection{Search Strategy}
+The search strategy comprises search terms, literature resources, and search process, which are detailed one by one as follows.
+
+\Figure[t!](topskip=0pt, botskip=0pt, midskip=0pt)[width=0.9\linewidth]{diagram.png}
+{\textbf{Stages of review protocol.}\label{fig11}}
+
+\subsubsection{Search Terms}
+The following steps were used to construct the search terms:
+\begin{itemize}
+
+    \item[a)]Identify major terms from the research questions.
+    
+    \item[b)]Identify synonyms for major terms and alternative spellings.
+    
+    \item[c)]Check the keywords in relevant papers.
+    
+\end{itemize}
+
+\subsubsection{Search process for studies}
+In table 1, we showed the search items and results from different sites.
+
+\subsubsection{Screening of papers}
+We applied inclusion and exclusion criteria to be explicit about the studies we considered in our review. We kept in this study papers that satisfy the inclusion and exclusion criteria, described in Table 2. With the practical screening we selected 50 papers from the initial 232 set.
+ 
+\subsubsection{Data Extraction}
+With the studies included in the review identified, we started a data extraction from the papers full readings. By extracting the data, we exploited the selected studies to collect the data that contribute to addressing the research questions concerned in this review. We devised the cards with the form of Table 3 to facilitate data extraction. During the data extraction, some data could not be extracted directly from the selected studies. Nevertheless, we could obtain them indirectly by processing the available data appropriately. For example, the estimation accuracy values of the same model may vary due to different model configurations or different samplings of data set. Not every selected study provides answers to all the six research questions. For ease of tracing the extracted data, we explicitly labeled each study with the IDs of the research questions to which the study can provide the corresponding answers.
+
+\begin{table}[h]
+\begin{center}
+\caption{\textbf{A list of data that were extracted from the full text sources that were retrieved }}
+\begin{tabular}{l}
+\hline
+        Data extracted from full text items    \\ 
+\hline
+        Study identifier \\
+        Year of publication \\
+        Name of authors \\
+        Source \\
+        Article title \\
+        Type of study (experiment, case study, or survey) \\
+        Object Detection/ Segmentation methods \\
+        Detection/ Segmentation duration \\
+        Type of modeling \\
+        Comparison of methods \\
+        Metrics/ Data sets used in experiments \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\section{RESULT \& DISCUSSION}
+\subsection{Methods to identify objects (RQ1)}
+From the selected studies, we identified ten techniques to identify objects. They are listed as follows.
+\begin{itemize}
+
+    \item R-CNN
+    
+    \begin{figure}[h]
+    \centering
+    \includegraphics[width=3in]{q1.PNG}
+    \caption{R-CNN method.}
+    \label{fig12}
+    \end{figure}
+    
+    \item SPP-NET
+    
+    \item FAST RCNN
+    
+    \begin{figure}[h]
+    \centering
+    \includegraphics[width=3in]{q11.PNG}
+    \caption{Fast R-CNN method.}
+    \label{fig13}
+    \end{figure}
+    
+    \item FASTER RCNN
+    
+    \item R-FCNN
+    
+    \item MASK R-CNN
+    
+    \item FPN
+    
+    \item YOLO
+    
+    \item SSD
+    
+    \item YOLOv2
+    
+\end{itemize}
+
+
+\subsection{Methods that outperform other methods (RQ2)}
+From the selected studies, we identified these techniques. They are listed as follows.
+\begin{itemize}
+
+    \item R-CNN
+    
+    \item FAST RCNN
+    
+    \begin{table*}[ht!]
+\centering 
+\caption{COMPARISON OF TESTING CONSUMPTION ON VOC 07 TEST SET}
+\label{table5}
+\resizebox{1.25\columnwidth}{!}{
+    \begin{tabular}{c|c|c|c|c}
+
+    \toprule[.3em]
+    
+    Methods                         & Trained on & mAP(\%)       & Test time(sec/img) & Rate(FPS)   \\
+    
+    \midrule[.3em]
+    
+    SS+R-CNN                & 07         & 66.0          & 32.84              & 0.03        \\
+    
+    SS+SPP-net               & 07         & 63.1          & 2.3                & 0.44        \\
+    
+    SS+FRCN                 & 07+12      & 66.9          & 1.72               & 0.6         \\
+    
+    SDP+CRC                  & 07         & 68.9          & 0.47               & 2.1         \\
+    
+    SS+HyperNet*            & 07+12      & 76.3          & 0.20               & 5           \\
+    
+    MR-CNN\&S-CNN           & 07+12      & 78.2          & 30                 & 0.03        \\
+    
+    ION                     & 07+12+S    & 79.2          & 1.92               & 0.5         \\
+    
+    Faster R-CNN(VGGI16)     & 07+12      & 73.2          & 0.11               & 9.1         \\
+    
+    Faster R-CNN(ResNet101)  & 07+12      & \textbf{83.8} & 2.24               & 0.4         \\
+    
+    YOLO                    & 07+12      & 63.4          & \textbf{0.02}      & \textbf{45} \\
+    
+    SSSD300                  & 07+12      & 74.3          & \textbf{0.02}      & \textbf{46} \\
+    
+    SSD512                   & 07+12      & 76.8          & 0.05               & 19          \\
+    
+    R-FCN(ResNct101)         & 07+12+coco & 83.6          & 0.17               & 5.9         \\
+    
+    YOLOv2(544*544)          & 07+12      & 78.6          & 0.03               & 40          \\
+    
+    DSSD321(ResNet101)      & 07+12      & 78.6          & 0.07               & 13.6        \\
+    
+    DSOD300              & 07+12+coco & 81.7          & 0.06               & 17.4        \\
+    
+    PVANET+                 & 07+12+coco & \textbf{83.8} & 0.05               & 21.7        \\
+    
+    PVANET+(compress)      & 07+12+coco & 82.9          & 0.03               & 31.3        \\
+    
+    \bottomrule[.3em]
+    \end{tabular}}
+
+    \begin{tablenotes}
+    \item[*]   {\scriptsize * SS: Selective Search, SS*: ‘fast mode’ Selective Search, HyperNet*: the speed up version of HyperNet and PAVNET+(compresss): PAVNET with additional bounding box voting and compressed fully convolutional layers.}
+   \end{tablenotes}
+    
+\end{table*}
+    
+    \item SPP Net
+    
+    \item SSD
+    
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=3in]{q12.PNG}
+    \caption{Comparison of object detection algorithms.}
+    \label{fig14}
+\end{figure}
+
+\subsection{Reasons of efficiency than other methods (RQ3)}
+These methods are efficient than other methods because these methods give the best detection and minimum timing result. The following figure shows the comparison.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=3in]{q3.PNG}
+    \caption{Methods comparison.}
+    \label{fig15}
+\end{figure}
+
+\subsection{Datasets (RQ4)}
+From the selected studies, we identified twelve datasets. They are listed as follows.
+\begin{itemize}
+
+    \item PASCAL VOC 2007/2008/2012
+    
+    \item Microsoft COCO
+    
+    \item CIFAR-10
+    
+    \item CIFAR-100
+    
+    \item Caltech
+    
+    \item LIVE
+    
+    \item SIFT
+    
+    \item M2HT
+    
+    \item INRIA
+    
+    \item SOD
+    
+    \item KITTI
+    
+    \item ECSSD
+
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=3in]{q4.PNG}
+    \caption{Object Detection Datasets.}
+    \label{fig16}
+\end{figure}
+
+
+\subsection{Timing Analysis (RQ5)}
+Timing analysis (Table 4) is conducted on Intel i7-6700K CPU with a single core and NVIDIA Titan X GPU. Except for “SS” which is processed with CPU, the other procedures related to CNN are all evaluated on GPU.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=3in]{q5.PNG}
+    \caption{Time Complexity.}
+    \label{fig17}
+\end{figure}
+\begin{itemize}
+
+\item[1)] 
+By computing CNN features on shared feature maps
+(SPP-net), test consumption is reduced largely.It is also helpful
+to compress the parameters of FC layers with SVD
+(PAVNET and FRCN).
+
+\item[2)] 
+It takes additional test time to extract multiscale features
+and contextual information (ION and MR-RCNN~\&~S-RCNN).
+
+\item[3)] 
+It takes more time to train a more complex and deeper
+network (ResNet101 against VGG16) and this time
+consumption can be reduced by adding as many layers
+into shared fully convolutional layers as possible
+(FRCN).
+
+\item[4)] 
+Regression-based models can usually be processed
+in real time at the cost of a drop in accuracy
+compared with region proposal-based models. Also,
+region proposal-based models can be modified into
+real-time systems with the introduction of other
+tricks (PVANET), such as BN and residual
+connections.
+Fig. 16 is a comparison of time complexity.
+\end{itemize}
+
+\subsection{Trends in research to detect objects (RQ6)}
+The  figure - 18 shows the trends till 2017. In recent year SSD, YOLOv2 have also created a great impact on the researchers.
+\begin{itemize}
+    
+    \item Faster R-CNN
+    
+    \item Mask RCNN
+    
+    \item SSD
+    
+    \item YOLOv2
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=3in]{q6.PNG}
+    \caption{Comparison of object detection algorithms over year.}
+    \label{fig18}
+\end{figure}
+
+
+
+
+\section{CONCLUSIONS}
+This systematic paper provides a detailed review on deep learning-based object detection frameworks and image segmentation techniques. To develop an effective segmentation technique further research is required to partition an image for locating and identifying objects or boundaries in an image in a clear and meaningful way to meet the demands of advanced applications. \\
+This review is also meaningful for the developments in neural networks and related learning systems, which provides valuable insights and guidelines for future progress.   \\
+Further research is required to develop an effective segmentation technique to partition an image for locating and identifying objects or boundaries in an image in a clear and meaningful way to meet the demands of advanced applications. \\
+
+
+
+\bibliographystyle{IEEEtran}
+
+\bibliography{reference.bib}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,]{i.jpg}}]{\textbf{M. Firoz Ahmed}}currently completing the B.Sc. from the Dept. of Computer Science and Engineering, Shahjalal University of Science and Technology of Sylhet. He is currently doing the final year thesis, under the supervision of Prof. M. Abdullah Al Mumin. His research interests include object detection, object segmentation, and deep convolutional neural network, signal processing.
+\end{IEEEbiography}
+
+\vspace{-3in}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{ee.jpg}}]{\textbf{Md. Mushtaq Shahriyar Rafee}}
+currently completing the B.Sc. from the Dept. of Computer Science and Engineering, Shahjalal University of Science and Technology of Sylhet. He is currently doing the final year thesis, under the supervision of Prof. M. Abdullah Al Mumin. His research interests include object detection, object segmentation, and deep convolutional neural network, signal processing.
+\end{IEEEbiography}
+
+\vspace{-3in}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{t.jpg}}]{\textbf{M. Abdullah Al Mumin}}received the B.Sc. and M.Sc. and Ph.D. degrees from the Dept. of Computer Science and Engineering, Shahjalal University of Science and Technology of Sylhet. Currently he is the Director of IICT and Dept. Head of CSE, SUST. His research interests include Machine translation for low-resource scenario, Bangla language processing, Bangla question answering using ML, Plagarism Checker, Bangla text clustering, Bangla topic modelling.
+\end{IEEEbiography}
+
+
+\EOD
+
+\end{document}
